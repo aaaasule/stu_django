@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>学生信息</title>
+</head>
+<body>
+{#<ul>#}
+{#    {% for item in students %}#}
+{#        <li>{{ item.name }}</li>#}
+{#    {% endfor %}#}
+{#</ul>#}
+<ul>
+    {% for item in grades %}
+    <li><a href="http://127.0.0.1:8000/students/{{ item.id }}">{{ item.name }}</a></li>
+    {% endfor %}
+
+</ul>
+
+</body>
+</html>
