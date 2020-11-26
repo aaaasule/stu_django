@@ -1,3 +1,4 @@
+from django.db.models import Q, F
 from django.http import HttpResponse
 from django.shortcuts import render
 
@@ -134,8 +135,28 @@ def handle_group(request):
     # user = User.objects.aggregate(Max('uid'))
 
     # 分组   根据values中的值分组; annotate 统计字段; select sex,count(uid) from user group by sex;
-    data = User.objects.values('sex').annotate(Count('uid'))  # QuerySet  查询结果集
-    data = data.filter(uid__gt=7)  # 再次过滤 select sex,count(uid) from user group by sex having uid > 7;
-    print(data)
+    # data = User.objects.values('sex').annotate(Count('uid'))  # QuerySet  查询结果集
+    # data = data.filter(uid__gt=7)  # 再次过滤 select sex,count(uid) from user group by sex having uid > 7;
 
+    #  Q 对象  构造 逻辑或、逻辑非; 和F 对象
+    # data = User.objects.filter(Q(uid=1) | Q(sex=1))  # 或
+    # data = User.objects.filter(~Q(uid__gt=7))  # 非 逻辑取反  gt 大于  uid 小于等于7   不能处理null
+
+    # F对象：把sex 看成USer的一个列名
+    data = User.objects.filter(uid=F('sex'))
+    # <QuerySet [<User: james:7:7>, <User: neymar:10:10>, <User: xdd:13:13>]>
+
+    print(data)
     return HttpResponse("Group")
+
+
+def handle_sql(request):
+    #  原生SQL
+    # user = User.objects.raw("select * from USER ")
+    # print(user)
+
+    # 防止sql注入  拼接符使用 %s  不用 format
+    user = User.objects.raw("select * from USER where username=%s ", ['jiye' or 'yuran'])
+    print(list(user), type(user))  # [<User: jiye:1:None>] <class 'django.db.models.query.RawQuerySet'>
+
+    return HttpResponse("SQL")

@@ -19,7 +19,7 @@ class User(BaseModel):
     sex = models.IntegerField()
 
     def __str__(self):  # 返回对象信息
-        return self.username
+        return self.username + ":" + str(self.uid) + ":" + str(self.sex)
 
     class Meta:
         db_table = "user"
